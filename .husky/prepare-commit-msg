@@ -1,4 +1,10 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-exec < /dev/tty && npx cz --hook || true
+# Check if the terminal is interactive
+if [ -t 1 ]; then
+  exec < /dev/tty && npx cz --hook || true
+else
+  # Fallback if non-interactive (e.g., CI)
+  npx commitlint --edit "$1"
+fi
